@@ -1,0 +1,471 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+// NEW: roles for administrative members only (students have their own table)
+enum StaffRole {
+  INSTRUCTOR
+  MANAGER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+enum KycStatus {
+  PENDING
+  SUBMITTED
+  VERIFIED
+  REJECTED
+}
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum LessonType {
+  VIDEO
+  ARTICLE
+  DOCUMENT
+  OTHER
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  EXPIRED
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum InvoiceStatus {
+  ISSUED
+  VOID
+  REFUNDED
+}
+
+// NEW -----------------------------------------------------------------------
+enum AccessPlanType {
+  ONE_YEAR
+  THREE_YEAR
+  LIFETIME
+}
+
+// NEW -----------------------------------------------------------------------
+enum CouponType {
+  PERCENTAGE
+  FIXED
+}
+
+
+model Student {
+  id          String     @id @default(uuid()) @db.Uuid
+  profileId   String     @unique @db.Uuid
+  firebaseUid String     @unique
+  status      UserStatus @default(ACTIVE)
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Restrict)
+
+  enrollments       Enrollment[]
+  orders            Order[]
+  invoices          Invoice[]
+  couponRedemptions CouponRedemption[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@map("students")
+}
+
+model Staff {
+  id          String     @id @default(uuid()) @db.Uuid
+  profileId   String     @unique @db.Uuid
+  firebaseUid String     @unique
+  role        StaffRole
+  status      UserStatus @default(ACTIVE)
+
+  profile Profile  @relation(fields: [profileId], references: [id], onDelete: Restrict)
+  courses Course[] @relation("CourseCreatedBy")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([role])
+  @@index([status])
+  @@map("staff")
+}
+
+
+// ---------------------------------------------------------------------------
+// Profile (the person) / Student / Staff (the accounts)
+// ---------------------------------------------------------------------------
+// The person. Holds no auth data: firebaseUid lives on Student and Staff.
+// One Profile may have a Student row, a Staff row, or both.
+
+model Profile {
+  id String @id @default(uuid()) @db.Uuid
+
+  email    String? @unique // 
+  phone    String? @unique //
+  firstName    String? 
+  lastName    String?
+
+  dateOfBirth  DateTime? @db.Date
+  gender       String?
+  address      String?
+  city         String?
+  state        String?
+  postalCode   String?
+  country      String?
+  profileImage String?
+
+  panNumber     String?
+  aadhaarNumber String?
+  kycStatus   KycStatus @default(PENDING)
+
+  
+
+  student Student?
+  staff   Staff?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([kycStatus])
+
+  @@map("profiles")
+}
+
+// ---------------------------------------------------------------------------
+// Course / Curriculum / Access Plans
+// ---------------------------------------------------------------------------
+
+model Course {
+  id               String       @id @default(uuid()) @db.Uuid
+  title            String
+  slug             String       @unique
+  description      String?
+  shortDescription String?
+  thumbnail        String?
+  status           CourseStatus @default(DRAFT)
+  createdById      String       @db.Uuid
+
+  createdBy   Staff           @relation("CourseCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  sections    CourseSection[]
+  enrollments Enrollment[]
+  orders      Order[]
+  invoices    Invoice[]
+
+  // NEW
+  accessPlans CourseAccessPlan[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdById])
+  @@index([status, createdAt])
+  @@map("courses")
+}
+
+model CourseSection {
+  id       String @id @default(uuid()) @db.Uuid
+  courseId String @db.Uuid
+  title    String
+  order    Int
+
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons Lesson[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([courseId, order])
+  @@index([courseId])
+  @@map("course_sections")
+}
+
+model Lesson {
+  id          String     @id @default(uuid()) @db.Uuid
+  sectionId   String     @db.Uuid
+  title       String
+  type        LessonType @default(VIDEO)
+  order       Int
+  duration    Int? // seconds; nullable for articles
+  contentUrl  String?
+  contentBody String?    @db.Text
+
+  section CourseSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([sectionId, order])
+  @@index([sectionId])
+  @@map("lessons")
+}
+
+// NEW -----------------------------------------------------------------------
+// Pricing lives here: each plan has its own MRP and selling price.
+model CourseAccessPlan {
+  id       String         @id @default(uuid()) @db.Uuid
+  courseId String         @db.Uuid
+  type     AccessPlanType
+
+  mrp          Decimal @db.Decimal(10, 2) // list price (strike-through) for this plan
+  price        Decimal @db.Decimal(10, 2) // selling price after plan discount; what checkout charges
+  durationDays Int? // null ONLY for LIFETIME; enforced in service layer
+  active       Boolean @default(true)
+
+  course      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  orders      Order[]
+  enrollments Enrollment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([courseId, type])
+  @@index([courseId, active])
+  @@map("course_access_plans")
+}
+
+// ---------------------------------------------------------------------------
+// Enrollment
+// ---------------------------------------------------------------------------
+
+model Enrollment {
+  id        String           @id @default(uuid()) @db.Uuid
+  studentId String           @db.Uuid
+  courseId  String           @db.Uuid
+  status    EnrollmentStatus @default(ACTIVE)
+
+  enrolledAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // NEW: access validity
+  accessPlanId String?           @db.Uuid
+  accessPlan   CourseAccessPlan? @relation(fields: [accessPlanId], references: [id], onDelete: SetNull)
+  planType     AccessPlanType? // snapshot
+  expiresAt    DateTime? // null = lifetime / no expiry
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  course  Course  @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  orders  Order[] // one enrollment -> many orders (renewals / upgrades)
+
+  @@unique([studentId, courseId])
+  @@index([courseId, status])
+  @@index([studentId, status])
+  @@index([accessPlanId]) // NEW
+  @@index([expiresAt]) // NEW
+  @@map("enrollments")
+}
+
+// ---------------------------------------------------------------------------
+// Order / Payment / Invoice
+// ---------------------------------------------------------------------------
+
+model Order {
+  id        String      @id @default(uuid()) @db.Uuid
+  studentId String      @db.Uuid
+  courseId  String      @db.Uuid
+  status    OrderStatus @default(PENDING)
+
+  amount      Decimal @db.Decimal(10, 2)
+  discount    Decimal @default(0) @db.Decimal(10, 2)
+  tax         Decimal @default(0) @db.Decimal(10, 2)
+  totalAmount Decimal @db.Decimal(10, 2)
+  currency    String  @default("INR")
+
+  payments     Payment[] // one order -> many payment attempts
+  invoice      Invoice?
+  enrollment   Enrollment? @relation(fields: [enrollmentId], references: [id], onDelete: SetNull)
+  enrollmentId String?     @db.Uuid
+
+  // NEW: access-plan snapshot
+  accessPlanId     String?           @db.Uuid
+  accessPlan       CourseAccessPlan? @relation(fields: [accessPlanId], references: [id], onDelete: SetNull)
+  planType         AccessPlanType? // snapshot
+  planMrp          Decimal?          @db.Decimal(10, 2) // snapshot: plan MRP at purchase time
+  planPrice        Decimal?          @db.Decimal(10, 2) // snapshot: plan selling price (before coupon)
+  planDurationDays Int? // snapshot (null = lifetime)
+
+  // NEW: coupon snapshot
+  couponId             String? @db.Uuid
+  coupon               Coupon? @relation(fields: [couponId], references: [id], onDelete: SetNull)
+  couponCodeSnapshot   String?
+  couponDiscountAmount Decimal @default(0) @db.Decimal(10, 2)
+
+  // NEW: redemption back-relation (1:1)
+  couponRedemption CouponRedemption?
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  course  Course  @relation(fields: [courseId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([studentId, createdAt])
+  @@index([courseId])
+  @@index([status])
+  @@index([enrollmentId])
+  @@index([accessPlanId]) // NEW
+  @@index([couponId]) // NEW
+  @@map("orders")
+}
+
+model Payment {
+  id      String        @id @default(uuid()) @db.Uuid
+  orderId String        @db.Uuid
+  status  PaymentStatus @default(PENDING)
+
+  amount   Decimal @db.Decimal(10, 2)
+  currency String  @default("INR")
+
+  gatewayProvider  String?
+  gatewayPaymentId String? @unique // idempotency key across retries / webhooks
+  gatewayOrderId   String?
+
+  paidAt DateTime?
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId])
+  @@index([status])
+  @@map("payments")
+}
+
+model Invoice {
+  id            String        @id @default(uuid()) @db.Uuid
+  invoiceNumber String        @unique
+  orderId       String        @unique @db.Uuid
+  studentId     String        @db.Uuid
+  courseId      String        @db.Uuid
+  status        InvoiceStatus @default(ISSUED)
+
+  amount      Decimal @db.Decimal(10, 2)
+  tax         Decimal @default(0) @db.Decimal(10, 2) // total tax (= CGST + SGST + IGST)
+  discount    Decimal @default(0) @db.Decimal(10, 2)
+  totalAmount Decimal @db.Decimal(10, 2)
+  currency    String  @default("INR")
+
+  issuedAt DateTime @default(now())
+
+  // NEW: itemized snapshot (mirrors Order at issue time)
+  planType             AccessPlanType?
+  planMrp              Decimal?        @db.Decimal(10, 2) // NEW
+  planPrice            Decimal?        @db.Decimal(10, 2)
+  planDurationDays     Int?
+  couponCodeSnapshot   String?
+  couponDiscountAmount Decimal         @default(0) @db.Decimal(10, 2)
+
+  // NEW: GST invoicing snapshot
+  gstin         String? // supplier GSTIN at issue time
+  placeOfSupply String?
+  cgstAmount    Decimal @default(0) @db.Decimal(10, 2)
+  sgstAmount    Decimal @default(0) @db.Decimal(10, 2)
+  igstAmount    Decimal @default(0) @db.Decimal(10, 2)
+  buyerName     String?
+  buyerAddress  String?
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  student Student @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  course  Course  @relation(fields: [courseId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([studentId, issuedAt])
+  @@index([courseId])
+  @@index([status])
+  @@map("invoices")
+}
+
+// ---------------------------------------------------------------------------
+// Coupons
+// ---------------------------------------------------------------------------
+
+// NEW -----------------------------------------------------------------------
+model Coupon {
+  id   String @id @default(uuid()) @db.Uuid
+  code String @unique // stored uppercase; enforced in service layer
+
+  type  CouponType
+  value Decimal    @db.Decimal(10, 2) // % (0–100) or fixed amount in `currency`
+
+  validFrom  DateTime
+  validUntil DateTime?
+  active     Boolean   @default(true)
+
+  maxTotalUses Int? // null = unlimited
+
+  usedCount Int @default(0) //Increment usedCount atomically.
+
+  currency String @default("INR")
+
+  orders      Order[]
+  redemptions CouponRedemption[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([active, validFrom, validUntil])
+  @@map("coupons")
+}
+
+// NEW -----------------------------------------------------------------------
+model CouponRedemption {
+  id        String @id @default(uuid()) @db.Uuid
+  couponId  String @db.Uuid
+  studentId String @db.Uuid
+  orderId   String @unique @db.Uuid // one redemption per order (idempotent)
+
+  discountAmount Decimal @db.Decimal(10, 2)
+
+  coupon  Coupon  @relation(fields: [couponId], references: [id], onDelete: Restrict)
+  student Student @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([couponId, studentId])
+  @@index([studentId])
+  @@map("coupon_redemptions")
+}

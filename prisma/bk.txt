@@ -1,0 +1,27 @@
+npm install firebase
+
+
+
+
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDrLfyCld51Kl1dj5unJ4VAkTw057vNoQc",
+  authDomain: "myperfectguide-316eb.firebaseapp.com",
+  projectId: "myperfectguide-316eb",
+  storageBucket: "myperfectguide-316eb.firebasestorage.app",
+  messagingSenderId: "663593497268",
+  appId: "1:663593497268:web:691e842c7e73f5c0471de1",
+  measurementId: "G-HM4P8KDL72"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);

@@ -1,0 +1,15 @@
+npm run format:check
+npm run format
+
+npm run lint
+npm run lint:fix
+
+npm run typecheck
+
+npm run build
+
+
+npx prisma migrate dev --name init
+npx prisma migrate reset
+
+npx prisma generate

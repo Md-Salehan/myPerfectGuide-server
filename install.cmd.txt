@@ -1,0 +1,11 @@
+
+npm install express cors dotenv helmet zod
+
+npm install -D @types/cors @types/express @types/node @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint eslint-config-prettier eslint-plugin-import prettier tsx typescript
+
+npm install -D eslint-import-resolver-typescript
+
+
+npm install prisma@prev @types/pg --save-dev
+npm install @prisma/client@7 @prisma/adapter-pg pg dotenv
+npx prisma init --datasource-provider postgresql --output ../generated/prisma
