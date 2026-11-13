@@ -1,18 +1,20 @@
 import type { NextFunction, Request, Response } from "express";
 
-import type { UserRole } from "@/generated/prisma/client";
+import type { StaffRole } from "@/generated/prisma/client";
 import { ForbiddenError, UnauthorizedError } from "@/shared/errors";
 
 /**
- * Role-based authorization middleware factory.
+ * Role-based authorization for STAFF routes.
  *
- * Usage (Phase 6+):
- *   router.post("/", authenticate, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), create)
+ * A STUDENT principal never satisfies `authorize` — students have no staff
+ * role. Use `requireStudent` for student-only routes.
  *
- * Assumes `authenticate` ran first (`req.user` is set). If not, it fails
- * closed with 401 — a route misconfiguration is never a silent bypass.
+ * Usage:
+ *   router.post("/courses", authenticate, authorize("ADMIN", "INSTRUCTOR"), create)
+ *
+ * Assumes `authenticate` ran first. Fails closed with 401 if not.
  */
-export function authorize(...roles: UserRole[]) {
+export function authorize(...roles: StaffRole[]) {
   if (roles.length === 0) {
     throw new Error("authorize() requires at least one role");
   }
@@ -24,7 +26,16 @@ export function authorize(...roles: UserRole[]) {
       );
     }
 
-    if (!roles.includes(req.user.role)) {
+    if (req.user.kind !== "STAFF") {
+      return next(
+        new ForbiddenError(
+          "This action requires a staff account",
+          "STAFF_ONLY",
+        ),
+      );
+    }
+
+    if (!roles.includes(req.user.staff.role)) {
       return next(
         new ForbiddenError(
           "You do not have permission to perform this action",
@@ -37,8 +48,28 @@ export function authorize(...roles: UserRole[]) {
   };
 }
 
-/**
- * Alias for `authorize`, used where the intent reads more clearly.
- * Example: `requireRole(UserRole.ADMIN)`.
- */
 export const requireRole = authorize;
+
+/**
+ * Guard for student-only routes (enrollments, orders, dashboard, ...).
+ *
+ * Assumes `authenticate` ran first. A STAFF principal is rejected with 403.
+ */
+export function requireStudent() {
+  return (req: Request, _res: Response, next: NextFunction): void => {
+    if (!req.user) {
+      return next(
+        new UnauthorizedError("Authentication required", "AUTH_REQUIRED"),
+      );
+    }
+    if (req.user.kind !== "STUDENT") {
+      return next(
+        new ForbiddenError(
+          "This action requires a student account",
+          "STUDENT_ONLY",
+        ),
+      );
+    }
+    next();
+  };
+}

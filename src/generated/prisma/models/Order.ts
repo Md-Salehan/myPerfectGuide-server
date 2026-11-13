@@ -50,6 +50,7 @@ export type OrderSumAggregateOutputType = {
 
 export type OrderMinAggregateOutputType = {
   id: string | null
+  idempotencyKey: string | null
   studentId: string | null
   courseId: string | null
   status: $Enums.OrderStatus | null
@@ -73,6 +74,7 @@ export type OrderMinAggregateOutputType = {
 
 export type OrderMaxAggregateOutputType = {
   id: string | null
+  idempotencyKey: string | null
   studentId: string | null
   courseId: string | null
   status: $Enums.OrderStatus | null
@@ -96,6 +98,7 @@ export type OrderMaxAggregateOutputType = {
 
 export type OrderCountAggregateOutputType = {
   id: number
+  idempotencyKey: number
   studentId: number
   courseId: number
   status: number
@@ -143,6 +146,7 @@ export type OrderSumAggregateInputType = {
 
 export type OrderMinAggregateInputType = {
   id?: true
+  idempotencyKey?: true
   studentId?: true
   courseId?: true
   status?: true
@@ -166,6 +170,7 @@ export type OrderMinAggregateInputType = {
 
 export type OrderMaxAggregateInputType = {
   id?: true
+  idempotencyKey?: true
   studentId?: true
   courseId?: true
   status?: true
@@ -189,6 +194,7 @@ export type OrderMaxAggregateInputType = {
 
 export type OrderCountAggregateInputType = {
   id?: true
+  idempotencyKey?: true
   studentId?: true
   courseId?: true
   status?: true
@@ -299,6 +305,7 @@ export type OrderGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 
 export type OrderGroupByOutputType = {
   id: string
+  idempotencyKey: string | null
   studentId: string
   courseId: string
   status: $Enums.OrderStatus
@@ -345,6 +352,7 @@ export type OrderWhereInput = {
   OR?: Prisma.OrderWhereInput[]
   NOT?: Prisma.OrderWhereInput | Prisma.OrderWhereInput[]
   id?: Prisma.UuidFilter<"Order"> | string
+  idempotencyKey?: Prisma.StringNullableFilter<"Order"> | string | null
   studentId?: Prisma.UuidFilter<"Order"> | string
   courseId?: Prisma.UuidFilter<"Order"> | string
   status?: Prisma.EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
@@ -376,6 +384,7 @@ export type OrderWhereInput = {
 
 export type OrderOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   studentId?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -407,6 +416,7 @@ export type OrderOrderByWithRelationInput = {
 
 export type OrderWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  idempotencyKey?: string
   AND?: Prisma.OrderWhereInput | Prisma.OrderWhereInput[]
   OR?: Prisma.OrderWhereInput[]
   NOT?: Prisma.OrderWhereInput | Prisma.OrderWhereInput[]
@@ -437,10 +447,11 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   couponRedemption?: Prisma.XOR<Prisma.CouponRedemptionNullableScalarRelationFilter, Prisma.CouponRedemptionWhereInput> | null
   student?: Prisma.XOR<Prisma.StudentScalarRelationFilter, Prisma.StudentWhereInput>
   course?: Prisma.XOR<Prisma.CourseScalarRelationFilter, Prisma.CourseWhereInput>
-}, "id">
+}, "id" | "idempotencyKey">
 
 export type OrderOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   studentId?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -472,6 +483,7 @@ export type OrderScalarWhereWithAggregatesInput = {
   OR?: Prisma.OrderScalarWhereWithAggregatesInput[]
   NOT?: Prisma.OrderScalarWhereWithAggregatesInput | Prisma.OrderScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"Order"> | string
+  idempotencyKey?: Prisma.StringNullableWithAggregatesFilter<"Order"> | string | null
   studentId?: Prisma.UuidWithAggregatesFilter<"Order"> | string
   courseId?: Prisma.UuidWithAggregatesFilter<"Order"> | string
   status?: Prisma.EnumOrderStatusWithAggregatesFilter<"Order"> | $Enums.OrderStatus
@@ -495,6 +507,7 @@ export type OrderScalarWhereWithAggregatesInput = {
 
 export type OrderCreateInput = {
   id?: string
+  idempotencyKey?: string | null
   status?: $Enums.OrderStatus
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discount?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -521,6 +534,7 @@ export type OrderCreateInput = {
 
 export type OrderUncheckedCreateInput = {
   id?: string
+  idempotencyKey?: string | null
   studentId: string
   courseId: string
   status?: $Enums.OrderStatus
@@ -547,6 +561,7 @@ export type OrderUncheckedCreateInput = {
 
 export type OrderUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -573,6 +588,7 @@ export type OrderUpdateInput = {
 
 export type OrderUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
   courseId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
@@ -599,6 +615,7 @@ export type OrderUncheckedUpdateInput = {
 
 export type OrderCreateManyInput = {
   id?: string
+  idempotencyKey?: string | null
   studentId: string
   courseId: string
   status?: $Enums.OrderStatus
@@ -622,6 +639,7 @@ export type OrderCreateManyInput = {
 
 export type OrderUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -640,6 +658,7 @@ export type OrderUpdateManyMutationInput = {
 
 export type OrderUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
   courseId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
@@ -673,6 +692,7 @@ export type OrderOrderByRelationAggregateInput = {
 
 export type OrderCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -707,6 +727,7 @@ export type OrderAvgOrderByAggregateInput = {
 
 export type OrderMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -730,6 +751,7 @@ export type OrderMaxOrderByAggregateInput = {
 
 export type OrderMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  idempotencyKey?: Prisma.SortOrder
   studentId?: Prisma.SortOrder
   courseId?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -1033,6 +1055,7 @@ export type OrderUpdateOneRequiredWithoutCouponRedemptionNestedInput = {
 
 export type OrderCreateWithoutStudentInput = {
   id?: string
+  idempotencyKey?: string | null
   status?: $Enums.OrderStatus
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discount?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1058,6 +1081,7 @@ export type OrderCreateWithoutStudentInput = {
 
 export type OrderUncheckedCreateWithoutStudentInput = {
   id?: string
+  idempotencyKey?: string | null
   courseId: string
   status?: $Enums.OrderStatus
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1112,6 +1136,7 @@ export type OrderScalarWhereInput = {
   OR?: Prisma.OrderScalarWhereInput[]
   NOT?: Prisma.OrderScalarWhereInput | Prisma.OrderScalarWhereInput[]
   id?: Prisma.UuidFilter<"Order"> | string
+  idempotencyKey?: Prisma.StringNullableFilter<"Order"> | string | null
   studentId?: Prisma.UuidFilter<"Order"> | string
   courseId?: Prisma.UuidFilter<"Order"> | string
   status?: Prisma.EnumOrderStatusFilter<"Order"> | $Enums.OrderStatus
@@ -1135,6 +1160,7 @@ export type OrderScalarWhereInput = {
 
 export type OrderCreateWithoutCourseInput = {
   id?: string
+  idempotencyKey?: string | null
   status?: $Enums.OrderStatus
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discount?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1160,6 +1186,7 @@ export type OrderCreateWithoutCourseInput = {
 
 export type OrderUncheckedCreateWithoutCourseInput = {
   id?: string
+  idempotencyKey?: string | null
   studentId: string
   status?: $Enums.OrderStatus
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1211,6 +1238,7 @@ export type OrderUpdateManyWithWhereWithoutCourseInput = {
 
 export type OrderCreateWithoutAccessPlanInput = {
   id?: string
+  idempotencyKey?: string | null
   status?: $Enums.OrderStatus
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discount?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1236,6 +1264,7 @@ export type OrderCreateWithoutAccessPlanInput = {
 
 export type OrderUncheckedCreateWithoutAccessPlanInput = {
   id?: string
+  idempotencyKey?: string | null
   studentId: string
   courseId: string
   status?: $Enums.OrderStatus
@@ -1287,6 +1316,7 @@ export type OrderUpdateManyWithWhereWithoutAccessPlanInput = {
 
 export type OrderCreateWithoutEnrollmentInput = {
   id?: string
+  idempotencyKey?: string | null
   status?: $Enums.OrderStatus
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discount?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1312,6 +1342,7 @@ export type OrderCreateWithoutEnrollmentInput = {
 
 export type OrderUncheckedCreateWithoutEnrollmentInput = {
   id?: string
+  idempotencyKey?: string | null
   studentId: string
   courseId: string
   status?: $Enums.OrderStatus
@@ -1363,6 +1394,7 @@ export type OrderUpdateManyWithWhereWithoutEnrollmentInput = {
 
 export type OrderCreateWithoutPaymentsInput = {
   id?: string
+  idempotencyKey?: string | null
   status?: $Enums.OrderStatus
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discount?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1388,6 +1420,7 @@ export type OrderCreateWithoutPaymentsInput = {
 
 export type OrderUncheckedCreateWithoutPaymentsInput = {
   id?: string
+  idempotencyKey?: string | null
   studentId: string
   courseId: string
   status?: $Enums.OrderStatus
@@ -1429,6 +1462,7 @@ export type OrderUpdateToOneWithWhereWithoutPaymentsInput = {
 
 export type OrderUpdateWithoutPaymentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1454,6 +1488,7 @@ export type OrderUpdateWithoutPaymentsInput = {
 
 export type OrderUncheckedUpdateWithoutPaymentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
   courseId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
@@ -1479,6 +1514,7 @@ export type OrderUncheckedUpdateWithoutPaymentsInput = {
 
 export type OrderCreateWithoutInvoiceInput = {
   id?: string
+  idempotencyKey?: string | null
   status?: $Enums.OrderStatus
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discount?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1504,6 +1540,7 @@ export type OrderCreateWithoutInvoiceInput = {
 
 export type OrderUncheckedCreateWithoutInvoiceInput = {
   id?: string
+  idempotencyKey?: string | null
   studentId: string
   courseId: string
   status?: $Enums.OrderStatus
@@ -1545,6 +1582,7 @@ export type OrderUpdateToOneWithWhereWithoutInvoiceInput = {
 
 export type OrderUpdateWithoutInvoiceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1570,6 +1608,7 @@ export type OrderUpdateWithoutInvoiceInput = {
 
 export type OrderUncheckedUpdateWithoutInvoiceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
   courseId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
@@ -1595,6 +1634,7 @@ export type OrderUncheckedUpdateWithoutInvoiceInput = {
 
 export type OrderCreateWithoutCouponInput = {
   id?: string
+  idempotencyKey?: string | null
   status?: $Enums.OrderStatus
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discount?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1620,6 +1660,7 @@ export type OrderCreateWithoutCouponInput = {
 
 export type OrderUncheckedCreateWithoutCouponInput = {
   id?: string
+  idempotencyKey?: string | null
   studentId: string
   courseId: string
   status?: $Enums.OrderStatus
@@ -1671,6 +1712,7 @@ export type OrderUpdateManyWithWhereWithoutCouponInput = {
 
 export type OrderCreateWithoutCouponRedemptionInput = {
   id?: string
+  idempotencyKey?: string | null
   status?: $Enums.OrderStatus
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   discount?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1696,6 +1738,7 @@ export type OrderCreateWithoutCouponRedemptionInput = {
 
 export type OrderUncheckedCreateWithoutCouponRedemptionInput = {
   id?: string
+  idempotencyKey?: string | null
   studentId: string
   courseId: string
   status?: $Enums.OrderStatus
@@ -1737,6 +1780,7 @@ export type OrderUpdateToOneWithWhereWithoutCouponRedemptionInput = {
 
 export type OrderUpdateWithoutCouponRedemptionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1762,6 +1806,7 @@ export type OrderUpdateWithoutCouponRedemptionInput = {
 
 export type OrderUncheckedUpdateWithoutCouponRedemptionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
   courseId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
@@ -1787,6 +1832,7 @@ export type OrderUncheckedUpdateWithoutCouponRedemptionInput = {
 
 export type OrderCreateManyStudentInput = {
   id?: string
+  idempotencyKey?: string | null
   courseId: string
   status?: $Enums.OrderStatus
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1809,6 +1855,7 @@ export type OrderCreateManyStudentInput = {
 
 export type OrderUpdateWithoutStudentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1834,6 +1881,7 @@ export type OrderUpdateWithoutStudentInput = {
 
 export type OrderUncheckedUpdateWithoutStudentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   courseId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1859,6 +1907,7 @@ export type OrderUncheckedUpdateWithoutStudentInput = {
 
 export type OrderUncheckedUpdateManyWithoutStudentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   courseId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1881,6 +1930,7 @@ export type OrderUncheckedUpdateManyWithoutStudentInput = {
 
 export type OrderCreateManyCourseInput = {
   id?: string
+  idempotencyKey?: string | null
   studentId: string
   status?: $Enums.OrderStatus
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1903,6 +1953,7 @@ export type OrderCreateManyCourseInput = {
 
 export type OrderUpdateWithoutCourseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1928,6 +1979,7 @@ export type OrderUpdateWithoutCourseInput = {
 
 export type OrderUncheckedUpdateWithoutCourseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1953,6 +2005,7 @@ export type OrderUncheckedUpdateWithoutCourseInput = {
 
 export type OrderUncheckedUpdateManyWithoutCourseInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -1975,6 +2028,7 @@ export type OrderUncheckedUpdateManyWithoutCourseInput = {
 
 export type OrderCreateManyAccessPlanInput = {
   id?: string
+  idempotencyKey?: string | null
   studentId: string
   courseId: string
   status?: $Enums.OrderStatus
@@ -1997,6 +2051,7 @@ export type OrderCreateManyAccessPlanInput = {
 
 export type OrderUpdateWithoutAccessPlanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -2022,6 +2077,7 @@ export type OrderUpdateWithoutAccessPlanInput = {
 
 export type OrderUncheckedUpdateWithoutAccessPlanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
   courseId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
@@ -2047,6 +2103,7 @@ export type OrderUncheckedUpdateWithoutAccessPlanInput = {
 
 export type OrderUncheckedUpdateManyWithoutAccessPlanInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
   courseId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
@@ -2069,6 +2126,7 @@ export type OrderUncheckedUpdateManyWithoutAccessPlanInput = {
 
 export type OrderCreateManyEnrollmentInput = {
   id?: string
+  idempotencyKey?: string | null
   studentId: string
   courseId: string
   status?: $Enums.OrderStatus
@@ -2091,6 +2149,7 @@ export type OrderCreateManyEnrollmentInput = {
 
 export type OrderUpdateWithoutEnrollmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -2116,6 +2175,7 @@ export type OrderUpdateWithoutEnrollmentInput = {
 
 export type OrderUncheckedUpdateWithoutEnrollmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
   courseId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
@@ -2141,6 +2201,7 @@ export type OrderUncheckedUpdateWithoutEnrollmentInput = {
 
 export type OrderUncheckedUpdateManyWithoutEnrollmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
   courseId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
@@ -2163,6 +2224,7 @@ export type OrderUncheckedUpdateManyWithoutEnrollmentInput = {
 
 export type OrderCreateManyCouponInput = {
   id?: string
+  idempotencyKey?: string | null
   studentId: string
   courseId: string
   status?: $Enums.OrderStatus
@@ -2185,6 +2247,7 @@ export type OrderCreateManyCouponInput = {
 
 export type OrderUpdateWithoutCouponInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   discount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -2210,6 +2273,7 @@ export type OrderUpdateWithoutCouponInput = {
 
 export type OrderUncheckedUpdateWithoutCouponInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
   courseId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
@@ -2235,6 +2299,7 @@ export type OrderUncheckedUpdateWithoutCouponInput = {
 
 export type OrderUncheckedUpdateManyWithoutCouponInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   studentId?: Prisma.StringFieldUpdateOperationsInput | string
   courseId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
@@ -2288,6 +2353,7 @@ export type OrderCountOutputTypeCountPaymentsArgs<ExtArgs extends runtime.Types.
 
 export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  idempotencyKey?: boolean
   studentId?: boolean
   courseId?: boolean
   status?: boolean
@@ -2320,6 +2386,7 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 
 export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  idempotencyKey?: boolean
   studentId?: boolean
   courseId?: boolean
   status?: boolean
@@ -2348,6 +2415,7 @@ export type OrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 
 export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  idempotencyKey?: boolean
   studentId?: boolean
   courseId?: boolean
   status?: boolean
@@ -2376,6 +2444,7 @@ export type OrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 
 export type OrderSelectScalar = {
   id?: boolean
+  idempotencyKey?: boolean
   studentId?: boolean
   courseId?: boolean
   status?: boolean
@@ -2397,7 +2466,7 @@ export type OrderSelectScalar = {
   updatedAt?: boolean
 }
 
-export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "studentId" | "courseId" | "status" | "amount" | "discount" | "tax" | "totalAmount" | "currency" | "enrollmentId" | "accessPlanId" | "planType" | "planMrp" | "planPrice" | "planDurationDays" | "couponId" | "couponCodeSnapshot" | "couponDiscountAmount" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
+export type OrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "idempotencyKey" | "studentId" | "courseId" | "status" | "amount" | "discount" | "tax" | "totalAmount" | "currency" | "enrollmentId" | "accessPlanId" | "planType" | "planMrp" | "planPrice" | "planDurationDays" | "couponId" | "couponCodeSnapshot" | "couponDiscountAmount" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
 export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   payments?: boolean | Prisma.Order$paymentsArgs<ExtArgs>
   invoice?: boolean | Prisma.Order$invoiceArgs<ExtArgs>
@@ -2438,6 +2507,7 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    idempotencyKey: string | null
     studentId: string
     courseId: string
     status: $Enums.OrderStatus
@@ -2889,6 +2959,7 @@ export interface Prisma__OrderClient<T, Null = never, ExtArgs extends runtime.Ty
  */
 export interface OrderFieldRefs {
   readonly id: Prisma.FieldRef<"Order", 'String'>
+  readonly idempotencyKey: Prisma.FieldRef<"Order", 'String'>
   readonly studentId: Prisma.FieldRef<"Order", 'String'>
   readonly courseId: Prisma.FieldRef<"Order", 'String'>
   readonly status: Prisma.FieldRef<"Order", 'OrderStatus'>

@@ -1461,6 +1461,8 @@ export const ProfileScalarFieldEnum = {
   phone: 'phone',
   firstName: 'firstName',
   lastName: 'lastName',
+  emailVerified: 'emailVerified',
+  phoneVerified: 'phoneVerified',
   dateOfBirth: 'dateOfBirth',
   gender: 'gender',
   address: 'address',
@@ -1556,6 +1558,7 @@ export type EnrollmentScalarFieldEnum = (typeof EnrollmentScalarFieldEnum)[keyof
 
 export const OrderScalarFieldEnum = {
   id: 'id',
+  idempotencyKey: 'idempotencyKey',
   studentId: 'studentId',
   courseId: 'courseId',
   status: 'status',
@@ -1747,6 +1750,13 @@ export type ListEnumStaffRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
 
 
 /**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
  * Reference to a field of type 'KycStatus'
  */
 export type EnumKycStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'KycStatus'>
@@ -1827,13 +1837,6 @@ export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
  * Reference to a field of type 'Decimal[]'
  */
 export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 

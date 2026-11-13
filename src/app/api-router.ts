@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import { authRouter } from "@/modules/auth/auth.routes";
 import { apiLimiter } from "@/shared/middleware";
+import { checkoutRouter } from "@/modules/checkout/checkout.routes";
 
 /**
  * `/api/v1` router.
@@ -13,3 +14,4 @@ export const apiRouter = Router();
 
 apiRouter.use(apiLimiter);
 apiRouter.use("/auth", authRouter);
+apiRouter.use("/", checkoutRouter); // /checkout/:id, /orders

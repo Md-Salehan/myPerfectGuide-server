@@ -1,18 +1,40 @@
-import { User } from "@/generated/prisma/client";
+import type { Profile, Staff, Student } from "@/generated/prisma/client";
 
 /**
- * Module augmentation for Express Request.
+ * The authenticated principal attached to `req.user`.
  *
- * We attach request-scoped fields here so downstream middleware/services can
- * rely on them without re-declaring casts. Later phases add `user` (Phase 4).
+ * A request is either a STUDENT or a STAFF — never both. Downstream code
+ * must narrow on `kind` before accessing `student` / `staff`.
+ *
+ * `profile` is the shared Profile row, always present.
  */
+export type AuthenticatedPrincipal =
+  | {
+    kind: "STUDENT";
+    student: Student & { profile: Profile };
+    profile: Profile;
+  }
+  | {
+    kind: "STAFF";
+    staff: Staff & { profile: Profile };
+    profile: Profile;
+  };
+
+export interface VerifiedClaims {
+  uid: string;
+  email: string | null;
+  phone: string | null;
+  emailVerified: boolean;
+  phoneVerified: boolean;
+}
+
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface Request {
       id: string;
-      user?: User;
+      user?: AuthenticatedPrincipal;
       firebaseUid?: string;
+      firebaseClaims?: VerifiedClaims;
     }
   }
 }

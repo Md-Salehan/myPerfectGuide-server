@@ -10,7 +10,7 @@ const envSchema = z.object({
   NODE_ENV: z
     .enum(["development", "test", "production"])
     .default("development"),
-  PORT: z.coerce.number().int().positive().default(5000),
+  PORT: z.coerce.number().int().positive().default(3000),
 
   DATABASE_URL: z
     .string()
@@ -30,6 +30,9 @@ const envSchema = z.object({
       (v) => v.includes("BEGIN PRIVATE KEY"),
       "FIREBASE_PRIVATE_KEY must be a PEM private key (BEGIN PRIVATE KEY)",
     ),
+
+  RAZORPAY_KEY_ID: z.string().min(1, "RAZORPAY_KEY_ID is required"),
+  RAZORPAY_KEY_SECRET: z.string().min(1, "RAZORPAY_KEY_SECRET is required"),
 });
 
 export type Env = z.infer<typeof envSchema>;

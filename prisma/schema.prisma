@@ -145,6 +145,9 @@ model Profile {
   firstName    String? 
   lastName    String?
 
+  emailVerified Boolean @default(false)
+  phoneVerified Boolean @default(false)
+
   dateOfBirth  DateTime? @db.Date
   gender       String?
   address      String?
@@ -301,6 +304,7 @@ model Enrollment {
 
 model Order {
   id        String      @id @default(uuid()) @db.Uuid
+  idempotencyKey String? @unique
   studentId String      @db.Uuid
   courseId  String      @db.Uuid
   status    OrderStatus @default(PENDING)

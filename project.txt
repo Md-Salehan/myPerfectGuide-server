@@ -1,0 +1,375 @@
+
+## 1. Complete Folder Tree
+
+I verified this against the accessible workspace contents; the tree below reflects the actual files present under src and its nested folders.
+
+```text
+src
+├── app
+│   ├── api-router.ts
+│   ├── app.ts
+│   └── routes.ts
+├── config
+│   ├── database.ts
+│   ├── env.ts
+│   └── firebase.ts
+├── generated
+│   └── prisma
+│       ├── browser.ts
+│       ├── client.ts
+│       ├── commonInputTypes.ts
+│       ├── enums.ts
+│       ├── internal
+│       │   ├── class.ts
+│       │   ├── prismaNamespace.ts
+│       │   └── prismaNamespaceBrowser.ts
+│       ├── models.ts
+│       └── models
+│           ├── Coupon.ts
+│           ├── CouponRedemption.ts
+│           ├── Course.ts
+│           ├── CourseAccessPlan.ts
+│           ├── CourseSection.ts
+│           ├── Enrollment.ts
+│           ├── Invoice.ts
+│           ├── Lesson.ts
+│           ├── Order.ts
+│           ├── Payment.ts
+│           ├── Profile.ts
+│           ├── Staff.ts
+│           └── Student.ts
+├── modules
+│   └── auth
+│       ├── auth.controller.ts
+│       ├── auth.routes.ts
+│       ├── auth.service.ts
+│       ├── auth.types.ts
+│       ├── auth.validation.ts
+│       └── authenticate.middleware.ts
+├── server.ts
+├── shared
+│   ├── constants
+│   │   └── http-status.ts
+│   ├── errors
+│   │   ├── app-error.ts
+│   │   ├── bad-request-error.ts
+│   │   ├── conflict-error.ts
+│   │   ├── forbidden-error.ts
+│   │   ├── index.ts
+│   │   ├── not-found-error.ts
+│   │   ├── unauthorized-error.ts
+│   │   └── validation-error.ts
+│   ├── middleware
+│   │   ├── async-handler.ts
+│   │   ├── authorize.ts
+│   │   ├── error-handler.ts
+│   │   ├── index.ts
+│   │   ├── rate-limiter.ts
+│   │   ├── request-id.ts
+│   │   └── request-logger.ts
+│   ├── responses
+│   │   └── api-response.ts
+│   ├── types
+│   │   ├── express.d.ts
+│   │   └── pagination.ts
+│   └── utils
+│       ├── pagination.ts
+│       └── validation.ts
+└──
+```
+
+## 2. File-by-File Documentation
+
+No empty, inaccessible, or missing files were found in the inspected src tree.
+
+### Application bootstrap and routing
+
+- server.ts
+  - Purpose: Starts the Express app and manages process lifecycle.
+  - Key functionality: Creates app, listens on `env.PORT`, logs the startup URL, and performs graceful shutdown on `SIGINT`/`SIGTERM` by closing the HTTP server and disconnecting Prisma.
+  - Dependencies/interactions: Imports app.ts, env.ts, and database.ts.
+
+- app.ts
+  - Purpose: Creates the Express application instance.
+  - Key functionality: Configures `trust proxy`, attaches request ID and request logger, enables `helmet`, `cors`, JSON parsing, and URL-encoded parsing; mounts the health router and versioned API router; registers 404 and central error handlers.
+  - Dependencies/interactions: Uses Express middleware and imports api-router.ts, routes.ts, and middleware exports from index.ts.
+
+- api-router.ts
+  - Purpose: Defines the `/api/v1` router.
+  - Key functionality: Applies the shared API rate limiter and mounts the auth router under `/auth`.
+  - Dependencies/interactions: Imports Express `Router`, auth.routes.ts, and index.ts.
+
+- routes.ts
+  - Purpose: Hosts non-versioned root routes.
+  - Key functionality: Exposes a `/health` endpoint returning a success payload with uptime and timestamp.
+  - Dependencies/interactions: Uses Express `Router` and standard HTTP response helpers.
+
+### Configuration
+
+- env.ts
+  - Purpose: Validates and exposes environment variables.
+  - Key functionality: Uses Zod to require `NODE_ENV`, `PORT`, `DATABASE_URL`, `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, and `FIREBASE_PRIVATE_KEY`; exports `env`, plus environment booleans `isProduction`, `isDevelopment`, and `isTest`.
+  - Dependencies/interactions: Imports `dotenv/config`, `zod`, and is used by server.ts, database.ts, and firebase.ts.
+
+- database.ts
+  - Purpose: Provides a singleton Prisma client wired to PostgreSQL.
+  - Key functionality: Creates a `PrismaPg` adapter from `DATABASE_URL`, instantiates `PrismaClient`, stores it on `globalThis` in non-production, and exports prisma, `getPrisma`, and `disconnectPrisma`.
+  - Dependencies/interactions: Uses `@prisma/adapter-pg` and the generated client in client.ts.
+
+- firebase.ts
+  - Purpose: Initializes and reuses the Firebase Admin auth client.
+  - Key functionality: Creates a single Firebase app with service-account credentials from env values, unescapes `\n` in the private key, and exposes `getFirebaseAuth()`.
+  - Dependencies/interactions: Imports `firebase-admin/app` and `firebase-admin/auth`; reads env values from env.ts.
+
+### Auth module
+
+- auth.routes.ts
+  - Purpose: Declares the auth API routes.
+  - Key functionality: Defines public signup routes for students and staff and protected `/me` route for authenticated users.
+  - Dependencies/interactions: Uses `asyncHandler` and the auth controller plus the `authenticate` middleware.
+
+- auth.controller.ts
+  - Purpose: HTTP layer for auth endpoints.
+  - Key functionality: Extracts a verified Firebase UID from the `Authorization` header, validates request bodies with Zod, calls account creation in the service layer, and responds with standardized created/success envelopes.
+  - Dependencies/interactions: Imports the auth service, validation schemas, `verifyFirebaseToken`, shared error classes, and API response helpers.
+
+- auth.service.ts
+  - Purpose: Business logic for resolving and creating auth principals.
+  - Key functionality: Looks up a local student/staff by Firebase UID, creates profile-plus-student or profile-plus-staff records inside a transaction, checks for duplicate accounts, maps Prisma unique violations to `ConflictError`, and converts a principal into a DTO.
+  - Dependencies/interactions: Uses Prisma client from database.ts, Prisma-generated types, the auth types/validation files, and `ConflictError`/`ForbiddenError`.
+
+- auth.validation.ts
+  - Purpose: Validates signup input.
+  - Key functionality: Defines `studentSignupSchema` and `staffSignupSchema` using Zod; staff signup restricts roles to `INSTRUCTOR` and `MANAGER`.
+  - Dependencies/interactions: Imports `zod` and matches the generated Prisma enums type used in auth.types.ts.
+
+- auth.types.ts
+  - Purpose: Client-facing auth DTO contracts.
+  - Key functionality: Declares `StudentDto`, `StaffDto`, `PrincipalDto`, and `MeResponse`; includes shape for the principal returned from auth middleware.
+  - Dependencies/interactions: Depends on generated Prisma enum `StaffRole` and the auth principal type from express.d.ts.
+
+- authenticate.middleware.ts
+  - Purpose: Protects routes by verifying Firebase tokens and resolving the local principal.
+  - Key functionality: Extracts bearer tokens, verifies them via Firebase, resolves the user by Firebase UID, rejects inactive accounts, and attaches `req.user` and `req.firebaseUid`.
+  - Dependencies/interactions: Uses the Firebase auth helper, the auth service lookup, and custom `UnauthorizedError`, `NotFoundError`, and `ForbiddenError`.
+
+### Shared infrastructure
+
+- http-status.ts
+  - Purpose: Centralizes named HTTP codes used by the API.
+  - Key functionality: Exports the `HttpStatus` object and type alias for common response codes.
+  - Dependencies/interactions: Used by error classes and response helpers across the app.
+
+- app-error.ts
+  - Purpose: Base error contract for operational application errors.
+  - Key functionality: Defines `AppError` with `statusCode`, `code`, `isOperational`, and optional `details`; preserves prototype chain and standardizes error metadata.
+  - Dependencies/interactions: Imported by all custom error subclasses in errors.
+
+- bad-request-error.ts
+  - Purpose: 400-level error wrapper.
+  - Key functionality: Extends `AppError` with default code `BAD_REQUEST`.
+  - Dependencies/interactions: Uses http-status.ts.
+
+- conflict-error.ts
+  - Purpose: 409-level error wrapper.
+  - Key functionality: Extends `AppError` with default code `CONFLICT`.
+  - Dependencies/interactions: Used for duplicate account and unique-constraint cases in auth logic.
+
+- forbidden-error.ts
+  - Purpose: 403-level error wrapper.
+  - Key functionality: Extends `AppError` with default code `FORBIDDEN`.
+  - Dependencies/interactions: Used by auth middleware and authorization guards.
+
+- index.ts
+  - Purpose: Barrel export for shared error classes.
+  - Key functionality: Re-exports `AppError`, `BadRequestError`, `UnauthorizedError`, `ForbiddenError`, `NotFoundError`, `ConflictError`, and `ValidationError`.
+  - Dependencies/interactions: Centralizes imports for service and middleware modules.
+
+- not-found-error.ts
+  - Purpose: 404-level error wrapper.
+  - Key functionality: Extends `AppError` with default code `NOT_FOUND`.
+  - Dependencies/interactions: Used when a Firebase UID has no matching local principal.
+
+- unauthorized-error.ts
+  - Purpose: 401-level error wrapper.
+  - Key functionality: Extends `AppError` with default code `UNAUTHORIZED`.
+  - Dependencies/interactions: Used by token verification and auth guard failures.
+
+- validation-error.ts
+  - Purpose: 422-level validation error wrapper.
+  - Key functionality: Extends `AppError` and stores optional `details` for field-level validation failures.
+  - Dependencies/interactions: Used by Zod parsing utilities in validation.ts.
+
+- api-response.ts
+  - Purpose: Standardizes success payload envelopes.
+  - Key functionality: Exports `sendSuccess`, `sendCreated`, and `sendPaginated` plus typed success body interfaces for normal and paginated responses.
+  - Dependencies/interactions: Uses `HttpStatus` and Express `Response`; used by controllers in the auth module.
+
+- validation.ts
+  - Purpose: Converts Zod parsing errors into the app’s validation error contract.
+  - Key functionality: Exports `parseOrThrow` and a reusable `paginationQuerySchema` for page/limit validation.
+  - Dependencies/interactions: Imports `zod`, `ValidationError`, and pagination constants from pagination.ts.
+
+- pagination.ts
+  - Purpose: Helpers for pagination metadata and Prisma skip/take conversion.
+  - Key functionality: Builds `PaginationMeta`, converts page/limit to Prisma pagination arguments, and (defensively) parses and clamps incoming query values.
+  - Dependencies/interactions: Uses the pagination interfaces in pagination.ts.
+
+- pagination.ts
+  - Purpose: Shared pagination types and defaults.
+  - Key functionality: Declares `PaginationQuery`, `PaginationMeta`, `DEFAULT_PAGE`, `DEFAULT_LIMIT`, and `MAX_LIMIT`.
+  - Dependencies/interactions: Used by validation and response utilities.
+
+- express.d.ts
+  - Purpose: Augments Express request typing for the app.
+  - Key functionality: Adds `req.id`, `req.user`, and `req.firebaseUid`, and defines the discriminated union `AuthenticatedPrincipal` for Student/Staff principals.
+  - Dependencies/interactions: Uses generated Prisma types from client.ts.
+
+### Middleware
+
+- index.ts
+  - Purpose: Barrel export for middleware.
+  - Key functionality: Re-exports `asyncHandler`, `errorHandler`, `notFoundHandler`, `apiLimiter`, `requestId`, `requestLogger`, `authorize`, `requireRole`, and `requireStudent`.
+  - Dependencies/interactions: Centralizes shared middleware imports for routes and app bootstrap.
+
+- async-handler.ts
+  - Purpose: Wraps async Express handlers so errors are forwarded to the global error handler.
+  - Key functionality: Returns a `RequestHandler` that catches async rejections and calls `next(err)`.
+  - Dependencies/interactions: Used by the auth routes and controller-layer endpoints.
+
+- error-handler.ts
+  - Purpose: Centralizes HTTP error mapping.
+  - Key functionality: Responds with 404 for unmatched routes and normalizes thrown values into `{ success: false, error: ... }`; unknown errors are turned into `INTERNAL_ERROR` in production.
+  - Dependencies/interactions: Imports `isProduction`, `HttpStatus`, and `AppError`, and is mounted in app.ts.
+
+- request-id.ts
+  - Purpose: Adds a request-scoped correlation ID.
+  - Key functionality: Sets `req.id`, echoes it in the `X-Request-Id` header, and uses inbound IDs when present.
+  - Dependencies/interactions: Runs early in the middleware chain so logs and errors share the same request ID.
+
+- request-logger.ts
+  - Purpose: Emits access logs for each request.
+  - Key functionality: Measures duration and logs method, path, status code, and timing once the response finishes.
+  - Dependencies/interactions: Used by app.ts before route handling.
+
+- rate-limiter.ts
+  - Purpose: Adds a global per-IP API rate limit.
+  - Key functionality: Configures `express-rate-limit` with a 60s window and a value of 300 requests per IP; returns the standard error envelope for `429` responses.
+  - Dependencies/interactions: Imported in api-router.ts and uses `HttpStatus`.
+
+- authorize.ts
+  - Purpose: Role-based authorization guards.
+  - Key functionality: Exports `authorize`, `requireRole`, and `requireStudent`; restricts access to staff and student-only routes based on the authenticated principal and role.
+  - Dependencies/interactions: Uses the generated Prisma `StaffRole` type and shared error classes.
+
+### Generated Prisma client layer
+
+- client.ts
+  - Purpose: Server-side Prisma client entry point.
+  - Key functionality: Exports the generated `PrismaClient` class and the Prisma namespace; re-exports model types for Student, Staff, Profile, Course, CourseSection, Lesson, CourseAccessPlan, Enrollment, Order, Payment, Invoice, Coupon, and CouponRedemption.
+  - Dependencies/interactions: Generated by Prisma; used by database.ts.
+
+- browser.ts
+  - Purpose: Browser-safe Prisma types without the server-side client class.
+  - Key functionality: Exports Prisma namespace and the same model type aliases, but omits the full server client implementation.
+  - Dependencies/interactions: Generated counterpart to client.ts.
+
+- enums.ts
+  - Purpose: Prisma enum constants and TypeScript types.
+  - Key functionality: Exports `StaffRole`, `UserStatus`, `KycStatus`, `CourseStatus`, `LessonType`, `EnrollmentStatus`, `OrderStatus`, `PaymentStatus`, `InvoiceStatus`, `AccessPlanType`, and `CouponType` with their generated literal values.
+  - Dependencies/interactions: Used by auth validation and many model definitions.
+
+- commonInputTypes.ts
+  - Purpose: Generated common filter and input types for Prisma queries.
+  - Key functionality: Contains generic filter and aggregate input types for UUID, string, enum, and date fields used across models.
+  - Dependencies/interactions: Imported by the generated model index in models.ts.
+
+- models.ts
+  - Purpose: Barrel export for generated model types.
+  - Key functionality: Re-exports all generated model files and common input types.
+  - Dependencies/interactions: Acts as the central type index for the generated Prisma client.
+
+- class.ts
+  - Purpose: Internal generated Prisma client class implementation.
+  - Key functionality: Contains the generated runtime metadata, Prisma schema inline payload, and the `PrismaClient` implementation used by client.ts.
+  - Dependencies/interactions: Internal file not intended for direct import; generated by Prisma.
+
+- prismaNamespace.ts
+  - Purpose: Internal Prisma namespace and runtime helpers.
+  - Key functionality: Re-exports generated model types, Prisma error classes, sql helpers, and the client’s shared type machinery.
+  - Dependencies/interactions: Internal generated runtime support for the Prisma client.
+
+- prismaNamespaceBrowser.ts
+  - Purpose: Browser-safe variant of the Prisma namespace.
+  - Key functionality: Exposes browser-compatible Prisma runtime values like `Decimal`, `NullTypes`, and `ModelName`, plus model field enums.
+  - Dependencies/interactions: Used by the browser entry file browser.ts.
+
+### Generated model files
+
+- Student.ts
+  - Purpose: Generated model definition for `Student`.
+  - Key functionality: Exposes `StudentModel` and aggregate/filter/input types for Student queries and operations.
+  - Dependencies/interactions: Generated Prisma model type, part of the Prisma client type map.
+
+- Staff.ts
+  - Purpose: Generated model definition for `Staff`.
+  - Key functionality: Exposes `StaffModel` and all staff aggregate/CRUD-related types.
+  - Dependencies/interactions: Used in role-based auth and principal typing.
+
+- Profile.ts
+  - Purpose: Generated model definition for `Profile`.
+  - Key functionality: Exposes `ProfileModel` and related Prisma input/filter/aggregate types.
+  - Dependencies/interactions: Shared data object for student and staff records.
+
+- Course.ts
+  - Purpose: Generated model definition for `Course`.
+  - Key functionality: Exposes `CourseModel` and course-specific aggregates/composition types.
+  - Dependencies/interactions: Part of the EdTech domain model set.
+
+- CourseSection.ts
+  - Purpose: Generated model definition for `CourseSection`.
+  - Key functionality: Exposes `CourseSectionModel` and section ordering/aggregation types.
+  - Dependencies/interactions: Relates to course content structure.
+
+- Lesson.ts
+  - Purpose: Generated model definition for `Lesson`.
+  - Key functionality: Exposes `LessonModel` and lesson ordering/duration/filter types.
+  - Dependencies/interactions: Used in course content and lesson-based domain logic.
+
+- CourseAccessPlan.ts
+  - Purpose: Generated model definition for `CourseAccessPlan`.
+  - Key functionality: Exposes `CourseAccessPlanModel` and pricing/duration-related Prisma types.
+  - Dependencies/interactions: Supports enrollment and billing domain logic.
+
+- Enrollment.ts
+  - Purpose: Generated model definition for `Enrollment`.
+  - Key functionality: Exposes `EnrollmentModel` and enrollment status/access-plan types.
+  - Dependencies/interactions: Connects students to courses and plan metadata.
+
+- Order.ts
+  - Purpose: Generated model definition for `Order`.
+  - Key functionality: Exposes `OrderModel` with pricing, discount, tax, coupon, and status aggregates.
+  - Dependencies/interactions: Central to payments and invoices.
+
+- Payment.ts
+  - Purpose: Generated model definition for `Payment`.
+  - Key functionality: Exposes `PaymentModel` and payment gateway/status types.
+  - Dependencies/interactions: Tracks payment events for an order.
+
+- Invoice.ts
+  - Purpose: Generated model definition for `Invoice`.
+  - Key functionality: Exposes `InvoiceModel` and invoice tax/discount/amount input and aggregate types.
+  - Dependencies/interactions: Links student/course/order billing info.
+
+- Coupon.ts
+  - Purpose: Generated model definition for `Coupon`.
+  - Key functionality: Exposes `CouponModel` and validation/usage metadata for discounts.
+  - Dependencies/interactions: Used by order and redemption logic.
+
+- CouponRedemption.ts
+  - Purpose: Generated model definition for `CouponRedemption`.
+  - Key functionality: Exposes `CouponRedemptionModel` and redemption discount tracking types.
+  - Dependencies/interactions: Records each coupon use against a student and order.
+
+---
+

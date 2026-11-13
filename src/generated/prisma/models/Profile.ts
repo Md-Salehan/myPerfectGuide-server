@@ -30,6 +30,8 @@ export type ProfileMinAggregateOutputType = {
   phone: string | null
   firstName: string | null
   lastName: string | null
+  emailVerified: boolean | null
+  phoneVerified: boolean | null
   dateOfBirth: Date | null
   gender: string | null
   address: string | null
@@ -51,6 +53,8 @@ export type ProfileMaxAggregateOutputType = {
   phone: string | null
   firstName: string | null
   lastName: string | null
+  emailVerified: boolean | null
+  phoneVerified: boolean | null
   dateOfBirth: Date | null
   gender: string | null
   address: string | null
@@ -72,6 +76,8 @@ export type ProfileCountAggregateOutputType = {
   phone: number
   firstName: number
   lastName: number
+  emailVerified: number
+  phoneVerified: number
   dateOfBirth: number
   gender: number
   address: number
@@ -95,6 +101,8 @@ export type ProfileMinAggregateInputType = {
   phone?: true
   firstName?: true
   lastName?: true
+  emailVerified?: true
+  phoneVerified?: true
   dateOfBirth?: true
   gender?: true
   address?: true
@@ -116,6 +124,8 @@ export type ProfileMaxAggregateInputType = {
   phone?: true
   firstName?: true
   lastName?: true
+  emailVerified?: true
+  phoneVerified?: true
   dateOfBirth?: true
   gender?: true
   address?: true
@@ -137,6 +147,8 @@ export type ProfileCountAggregateInputType = {
   phone?: true
   firstName?: true
   lastName?: true
+  emailVerified?: true
+  phoneVerified?: true
   dateOfBirth?: true
   gender?: true
   address?: true
@@ -231,6 +243,8 @@ export type ProfileGroupByOutputType = {
   phone: string | null
   firstName: string | null
   lastName: string | null
+  emailVerified: boolean
+  phoneVerified: boolean
   dateOfBirth: Date | null
   gender: string | null
   address: string | null
@@ -273,6 +287,8 @@ export type ProfileWhereInput = {
   phone?: Prisma.StringNullableFilter<"Profile"> | string | null
   firstName?: Prisma.StringNullableFilter<"Profile"> | string | null
   lastName?: Prisma.StringNullableFilter<"Profile"> | string | null
+  emailVerified?: Prisma.BoolFilter<"Profile"> | boolean
+  phoneVerified?: Prisma.BoolFilter<"Profile"> | boolean
   dateOfBirth?: Prisma.DateTimeNullableFilter<"Profile"> | Date | string | null
   gender?: Prisma.StringNullableFilter<"Profile"> | string | null
   address?: Prisma.StringNullableFilter<"Profile"> | string | null
@@ -296,6 +312,8 @@ export type ProfileOrderByWithRelationInput = {
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   firstName?: Prisma.SortOrderInput | Prisma.SortOrder
   lastName?: Prisma.SortOrderInput | Prisma.SortOrder
+  emailVerified?: Prisma.SortOrder
+  phoneVerified?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrderInput | Prisma.SortOrder
   gender?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -322,6 +340,8 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ProfileWhereInput | Prisma.ProfileWhereInput[]
   firstName?: Prisma.StringNullableFilter<"Profile"> | string | null
   lastName?: Prisma.StringNullableFilter<"Profile"> | string | null
+  emailVerified?: Prisma.BoolFilter<"Profile"> | boolean
+  phoneVerified?: Prisma.BoolFilter<"Profile"> | boolean
   dateOfBirth?: Prisma.DateTimeNullableFilter<"Profile"> | Date | string | null
   gender?: Prisma.StringNullableFilter<"Profile"> | string | null
   address?: Prisma.StringNullableFilter<"Profile"> | string | null
@@ -345,6 +365,8 @@ export type ProfileOrderByWithAggregationInput = {
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   firstName?: Prisma.SortOrderInput | Prisma.SortOrder
   lastName?: Prisma.SortOrderInput | Prisma.SortOrder
+  emailVerified?: Prisma.SortOrder
+  phoneVerified?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrderInput | Prisma.SortOrder
   gender?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -372,6 +394,8 @@ export type ProfileScalarWhereWithAggregatesInput = {
   phone?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   firstName?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   lastName?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
+  emailVerified?: Prisma.BoolWithAggregatesFilter<"Profile"> | boolean
+  phoneVerified?: Prisma.BoolWithAggregatesFilter<"Profile"> | boolean
   dateOfBirth?: Prisma.DateTimeNullableWithAggregatesFilter<"Profile"> | Date | string | null
   gender?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   address?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
@@ -393,6 +417,8 @@ export type ProfileCreateInput = {
   phone?: string | null
   firstName?: string | null
   lastName?: string | null
+  emailVerified?: boolean
+  phoneVerified?: boolean
   dateOfBirth?: Date | string | null
   gender?: string | null
   address?: string | null
@@ -416,6 +442,8 @@ export type ProfileUncheckedCreateInput = {
   phone?: string | null
   firstName?: string | null
   lastName?: string | null
+  emailVerified?: boolean
+  phoneVerified?: boolean
   dateOfBirth?: Date | string | null
   gender?: string | null
   address?: string | null
@@ -439,6 +467,8 @@ export type ProfileUpdateInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -462,6 +492,8 @@ export type ProfileUncheckedUpdateInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -485,6 +517,8 @@ export type ProfileCreateManyInput = {
   phone?: string | null
   firstName?: string | null
   lastName?: string | null
+  emailVerified?: boolean
+  phoneVerified?: boolean
   dateOfBirth?: Date | string | null
   gender?: string | null
   address?: string | null
@@ -506,6 +540,8 @@ export type ProfileUpdateManyMutationInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -527,6 +563,8 @@ export type ProfileUncheckedUpdateManyInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -553,6 +591,8 @@ export type ProfileCountOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
+  emailVerified?: Prisma.SortOrder
+  phoneVerified?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   address?: Prisma.SortOrder
@@ -574,6 +614,8 @@ export type ProfileMaxOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
+  emailVerified?: Prisma.SortOrder
+  phoneVerified?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   address?: Prisma.SortOrder
@@ -595,6 +637,8 @@ export type ProfileMinOrderByAggregateInput = {
   phone?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
+  emailVerified?: Prisma.SortOrder
+  phoneVerified?: Prisma.SortOrder
   dateOfBirth?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   address?: Prisma.SortOrder
@@ -642,6 +686,10 @@ export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
 }
 
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
@@ -656,6 +704,8 @@ export type ProfileCreateWithoutStudentInput = {
   phone?: string | null
   firstName?: string | null
   lastName?: string | null
+  emailVerified?: boolean
+  phoneVerified?: boolean
   dateOfBirth?: Date | string | null
   gender?: string | null
   address?: string | null
@@ -678,6 +728,8 @@ export type ProfileUncheckedCreateWithoutStudentInput = {
   phone?: string | null
   firstName?: string | null
   lastName?: string | null
+  emailVerified?: boolean
+  phoneVerified?: boolean
   dateOfBirth?: Date | string | null
   gender?: string | null
   address?: string | null
@@ -716,6 +768,8 @@ export type ProfileUpdateWithoutStudentInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -738,6 +792,8 @@ export type ProfileUncheckedUpdateWithoutStudentInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -760,6 +816,8 @@ export type ProfileCreateWithoutStaffInput = {
   phone?: string | null
   firstName?: string | null
   lastName?: string | null
+  emailVerified?: boolean
+  phoneVerified?: boolean
   dateOfBirth?: Date | string | null
   gender?: string | null
   address?: string | null
@@ -782,6 +840,8 @@ export type ProfileUncheckedCreateWithoutStaffInput = {
   phone?: string | null
   firstName?: string | null
   lastName?: string | null
+  emailVerified?: boolean
+  phoneVerified?: boolean
   dateOfBirth?: Date | string | null
   gender?: string | null
   address?: string | null
@@ -820,6 +880,8 @@ export type ProfileUpdateWithoutStaffInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -842,6 +904,8 @@ export type ProfileUncheckedUpdateWithoutStaffInput = {
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dateOfBirth?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -866,6 +930,8 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   phone?: boolean
   firstName?: boolean
   lastName?: boolean
+  emailVerified?: boolean
+  phoneVerified?: boolean
   dateOfBirth?: boolean
   gender?: boolean
   address?: boolean
@@ -889,6 +955,8 @@ export type ProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   phone?: boolean
   firstName?: boolean
   lastName?: boolean
+  emailVerified?: boolean
+  phoneVerified?: boolean
   dateOfBirth?: boolean
   gender?: boolean
   address?: boolean
@@ -910,6 +978,8 @@ export type ProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   phone?: boolean
   firstName?: boolean
   lastName?: boolean
+  emailVerified?: boolean
+  phoneVerified?: boolean
   dateOfBirth?: boolean
   gender?: boolean
   address?: boolean
@@ -931,6 +1001,8 @@ export type ProfileSelectScalar = {
   phone?: boolean
   firstName?: boolean
   lastName?: boolean
+  emailVerified?: boolean
+  phoneVerified?: boolean
   dateOfBirth?: boolean
   gender?: boolean
   address?: boolean
@@ -946,7 +1018,7 @@ export type ProfileSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "phone" | "firstName" | "lastName" | "dateOfBirth" | "gender" | "address" | "city" | "state" | "postalCode" | "country" | "profileImage" | "panNumber" | "aadhaarNumber" | "kycStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
+export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "phone" | "firstName" | "lastName" | "emailVerified" | "phoneVerified" | "dateOfBirth" | "gender" | "address" | "city" | "state" | "postalCode" | "country" | "profileImage" | "panNumber" | "aadhaarNumber" | "kycStatus" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
 export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   student?: boolean | Prisma.Profile$studentArgs<ExtArgs>
   staff?: boolean | Prisma.Profile$staffArgs<ExtArgs>
@@ -966,6 +1038,8 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     phone: string | null
     firstName: string | null
     lastName: string | null
+    emailVerified: boolean
+    phoneVerified: boolean
     dateOfBirth: Date | null
     gender: string | null
     address: string | null
@@ -1409,6 +1483,8 @@ export interface ProfileFieldRefs {
   readonly phone: Prisma.FieldRef<"Profile", 'String'>
   readonly firstName: Prisma.FieldRef<"Profile", 'String'>
   readonly lastName: Prisma.FieldRef<"Profile", 'String'>
+  readonly emailVerified: Prisma.FieldRef<"Profile", 'Boolean'>
+  readonly phoneVerified: Prisma.FieldRef<"Profile", 'Boolean'>
   readonly dateOfBirth: Prisma.FieldRef<"Profile", 'DateTime'>
   readonly gender: Prisma.FieldRef<"Profile", 'String'>
   readonly address: Prisma.FieldRef<"Profile", 'String'>

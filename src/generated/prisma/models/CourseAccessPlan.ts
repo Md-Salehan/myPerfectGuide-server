@@ -540,10 +540,6 @@ export type DecimalFieldUpdateOperationsInput = {
   divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type CourseAccessPlanCreateNestedOneWithoutEnrollmentsInput = {
   create?: Prisma.XOR<Prisma.CourseAccessPlanCreateWithoutEnrollmentsInput, Prisma.CourseAccessPlanUncheckedCreateWithoutEnrollmentsInput>
   connectOrCreate?: Prisma.CourseAccessPlanCreateOrConnectWithoutEnrollmentsInput

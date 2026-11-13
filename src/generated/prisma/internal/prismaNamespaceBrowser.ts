@@ -113,6 +113,8 @@ export const ProfileScalarFieldEnum = {
   phone: 'phone',
   firstName: 'firstName',
   lastName: 'lastName',
+  emailVerified: 'emailVerified',
+  phoneVerified: 'phoneVerified',
   dateOfBirth: 'dateOfBirth',
   gender: 'gender',
   address: 'address',
@@ -208,6 +210,7 @@ export type EnrollmentScalarFieldEnum = (typeof EnrollmentScalarFieldEnum)[keyof
 
 export const OrderScalarFieldEnum = {
   id: 'id',
+  idempotencyKey: 'idempotencyKey',
   studentId: 'studentId',
   courseId: 'courseId',
   status: 'status',
