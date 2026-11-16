@@ -26,8 +26,30 @@ const profileFieldsSchema = z.object({
   phoneVerified: z.boolean().optional(),
 });
 
-export const studentSignupSchema = profileFieldsSchema;
-export type StudentSignupInput = z.infer<typeof studentSignupSchema>;
+const loginRegisterSchema = z.object({
+  email: z.email().optional(),
+  phone: z
+    .string()
+    .min(7)
+    .max(20)
+    .optional(),
+  firstName: z.string().min(1).max(80).optional(),
+  lastName: z.string().min(1).max(80).optional(),
+  dateOfBirth: z.coerce.date().optional(),
+  gender: z.string().max(20).optional(),
+  address: z.string().max(500).optional(),
+  city: z.string().max(100).optional(),
+  state: z.string().max(100).optional(),
+  postalCode: z.string().max(20).optional(),
+  country: z.string().max(100).optional(),
+  emailVerified: z.boolean().optional(),
+  phoneVerified: z.boolean().optional(),
+
+});
+
+export const loginRegisterInputSchema = loginRegisterSchema;
+export type LoginRegisterInput = z.infer<typeof loginRegisterSchema>;
+export type StudentSignupInput = z.infer<typeof loginRegisterSchema>;
 
 /**
  * Staff signup — public endpoint.

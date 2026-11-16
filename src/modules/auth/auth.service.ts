@@ -146,7 +146,7 @@ export async function createStaffAccount(params: {
     const created = await prisma.$transaction(async (tx) => {
       const profile = await tx.profile.create({
         data: {
-          ...buildProfileCreate(profileFields),
+          ...buildProfileCreate(profileFields), 
           email: verifiedClaims.email ?? undefined,
           phone: verifiedClaims.phone ?? undefined,
           emailVerified: verifiedClaims.emailVerified,

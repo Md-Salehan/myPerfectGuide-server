@@ -8,7 +8,7 @@ import {
 } from "@/modules/auth/auth.service";
 import {
   staffSignupSchema,
-  studentSignupSchema,
+  loginRegisterInputSchema
 } from "@/modules/auth/auth.validation";
 import { UnauthorizedError } from "@/shared/errors";
 import { sendCreated, sendSuccess } from "@/shared/responses/api-response";
@@ -37,7 +37,7 @@ function requireAuthContext(req: Request) {
    ------------------------------------------------------------ */
 export async function loginStudent(req: Request, res: Response): Promise<void> {
   const { firebaseClaims } = requireAuthContext(req);
-  const input = parseOrThrow(studentSignupSchema, req.body ?? {});
+  const input = parseOrThrow(loginRegisterInputSchema, req.body ?? {});
 
   const { principal, created } = await loginOrRegisterStudent({
     verifiedClaims: firebaseClaims,

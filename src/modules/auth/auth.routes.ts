@@ -21,13 +21,13 @@ export const authRouter = Router();
    `authenticate`.
    ------------------------------------------------------------ */
 authRouter.post(
-  "/login/student",
+  "/loginReg/student",
   asyncHandler(verifyFirebase),
   asyncHandler(loginStudent),
 );
 
 authRouter.post(
-  "/signup/staff",
+  "/loginReg/staff",
   asyncHandler(verifyFirebase),
   asyncHandler(signupStaff),
 );
